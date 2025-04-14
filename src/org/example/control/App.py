@@ -36,7 +36,7 @@ class App:
         self.result_label.pack(pady=10)
 
         # Галерея зображень
-        self.image_paths = ["src/resource/img/ball1.png", "src/resource/img/ball2.png", "src/resource/img/ball3.png"]
+        self.image_paths = ["../../../resource/img/ball1.png", "../../../resource/img/ball2.png", "../../../resource/img/ball3.png"]
         self.current_index = 0
 
         self.image_label = Label(root)
