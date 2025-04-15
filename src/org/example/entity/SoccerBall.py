@@ -1,7 +1,7 @@
 from src.org.example.entity.SportsEquipment import SportsEquipment
 
 
-class Football(SportsEquipment):
+class SoccerBall(SportsEquipment):
     def __init__(self, name, price, weight, diameter, pressure):
         super().__init__(name, price, weight)
         self.diameter = diameter  # діаметр

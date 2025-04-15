@@ -1,5 +1,8 @@
 from tkinter import *
-class ImageWork:
+from PIL import Image, ImageTk
+
+
+class GalleryView:
     def __init__(self, root):
         # Галерея зображень
         self.image_paths = ["../../../resource/img/ball1.png",
