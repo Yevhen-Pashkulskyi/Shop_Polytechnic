@@ -1,4 +1,4 @@
-from src.org.example.model.CreateObj import CreateObj
+from src.org.example.control.Control import Control
 from tkinter import *
 
 # інтерфейс тобто вікно для відображення даних та управління програмою
@@ -6,6 +6,7 @@ class GUIBuilder:
     def __init__(self, root, view):
         self.root = root
         self.view = view
+        self.control = Control(self)
 
         self.root.title("Спортивний інвентар - ⚽ Футбольний м'яч")
         self.root.geometry("900x700")
@@ -31,12 +32,10 @@ class GUIBuilder:
         self.pressure_entry = Entry(root)
         self.pressure_entry.pack()
 
-        self.create_obj = CreateObj(self, self.view)
-
         self.result_label = Label(root, text="", justify=LEFT, font=("Arial", 12))
         self.result_label.pack(pady=10)
 
-        Button(root, text="Створити об'єкт", command=self.create_obj.create_object).pack(pady=10)
+        Button(root, text="Створити об'єкт", command=self.control.create_soccer_ball).pack(pady=10)
 
         Button(root, text="⬅️ Попереднє", command=self.view.prev_image).pack(side=LEFT, padx=20)
         Button(root, text="➡️ Наступне", command=self.view.next_image).pack(side=RIGHT, padx=20)

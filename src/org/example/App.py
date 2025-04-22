@@ -1,5 +1,6 @@
-from tkinter import *
-from src.org.example.entity.SoccerBall import SoccerBall
+from tkinter import Tk
+
+from src.org.example.control.Control import Control
 from src.org.example.view.GUIBuilder import GUIBuilder
 from src.org.example.view.GalleryView import GalleryView
 
