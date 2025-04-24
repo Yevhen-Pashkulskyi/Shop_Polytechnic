@@ -73,3 +73,25 @@ class ObjectSaver:
                     return [] # Повертаємо порожній список у випадку помилки.
         else: # Якщо файл не існує.
             return [] # Повертаємо порожній список.
+
+    @staticmethod
+    def delete(ball_name):
+        """
+        Статичний метод для видалення об'єкта Ball з JSON-файлу за його назвою.
+
+        Args:
+            ball_name (str): Назва об'єкта Ball, який потрібно видалити.
+        """
+        if os.path.exists(ObjectSaver.FILE_PATH):
+            with open(ObjectSaver.FILE_PATH, "r+", encoding="utf-8") as file:
+                try:
+                    content = json.load(file)
+                    updated_content = [item for item in content if item["name"] != ball_name]
+                    file.seek(0)
+                    file.truncate() # Очищаємо вміст файлу перед записом оновлених даних
+                    json.dump(updated_content, file, indent=4, ensure_ascii=False)
+                    return True # Повертаємо True, якщо об'єкт був знайдений і видалений
+                except json.JSONDecodeError:
+                    return False # Повертаємо False, якщо файл порожній або містить некоректний JSON
+        else:
+            return False # Повертаємо False, якщо файл не існує

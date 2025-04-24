@@ -82,7 +82,7 @@ class GUIBuilder:
         self.manufacturer_listbox.config(yscrollcommand=self.manufacturer_scroll.set) # Налаштовуємо вертикальну прокрутку списку,
         # пов'язуючи її зі скролбаром.
         self.manufacturer_listbox.grid(row=5, column=1, padx=5, pady=5) # Розміщуємо список виробників у сітці.
-        self.manufacturer_scroll.grid(row=5, column=2, sticky="ns", padx=0) # Розміщуємо скролбар у сітці,
+        self.manufacturer_scroll.grid(row=5, column=1, columnspan=2, sticky="ns", padx=0) # Розміщуємо скролбар у сітці,
         # sticky="ns" - розтягування по вертикалі.
         self.manufacturers = ["Adidas", "Nike", "Puma"] # Список початкових виробників.
         for item in self.manufacturers:
@@ -150,17 +150,20 @@ class GUIBuilder:
         self.result_label = tk.Label(self.obj_tab, text="", justify=tk.LEFT, font=("Arial", 12)) # Мітка для відображення текстової інформації про об'єкт.
         # justify=tk.LEFT - вирівнювання тексту по лівому краю.
         # font - шрифт тексту.
-        self.result_label.pack(anchor="nw", padx=10, pady=10) # Розміщення мітки результату. anchor="nw" - притискання до північно-західного кута.
+        self.result_label.grid(row=0, column=0, columnspan=3, padx=5, pady=2, sticky="ew") # Розміщення мітки результату. anchor="nw" - притискання до північно-західного кута.
 
         self.result_image_label = tk.Label(self.obj_tab) # Мітка для відображення зображення об'єкта.
-        self.result_image_label.pack(pady=10) # Розміщення мітки зображення результату.
+        self.result_image_label.grid(row=1, column=0, columnspan=3, padx=5, sticky="ew") # Розміщення мітки зображення результату.
 
         # Кнопки для перемикання між завантаженими об'єктами у вкладці "Інформація"
         prev_obj_button = ttk.Button(self.obj_tab, text="⬅️ Попередній об'єкт", command=self.show_previous_loaded_object) # Кнопка "Попередній об'єкт".
-        prev_obj_button.pack(side="left", padx=10, pady=5) # Розміщення кнопки зліва.
+        prev_obj_button.grid(row=2, column=0, padx=10, pady=5, sticky="w") # Розміщення кнопки зліва.
 
         next_obj_button = ttk.Button(self.obj_tab, text="➡️ Наступний об'єкт", command=self.show_next_loaded_object) # Кнопка "Наступний об'єкт".
-        next_obj_button.pack(side="right", padx=10, pady=5) # Розміщення кнопки справа.
+        next_obj_button.grid(row=2, column=2, padx=10, pady=5, sticky="e") # Розміщення кнопки справа.
+
+        delete_obj_button = ttk.Button(self.obj_tab, text="🗑️ Видалити об'єкт", command=self.delete_current_object) # Додаємо кнопку видалення
+        delete_obj_button.grid(row=3, column=0, columnspan=3, padx=10, sticky="ew") # columnspan=3 для центрування
 
         self.load_and_display_objects() # Викликаємо метод для завантаження та відображення збережених об'єктів при ініціалізації GUI.
 
@@ -212,6 +215,22 @@ class GUIBuilder:
             self.current_loaded_object_index = (self.current_loaded_object_index + 1) % len(self.loaded_objects) # Збільшуємо індекс на 1,
             # використовуючи % для циклічного переходу.
             self.show_loaded_object(self.current_loaded_object_index) # Відображаємо об'єкт за новим індексом.
+
+    def delete_current_object(self):
+        """
+        Метод для видалення поточного відображуваного об'єкта з файлу та оновлення відображення.
+        """
+        if self.loaded_objects:
+            current_object = self.loaded_objects[self.current_loaded_object_index]
+            if messagebox.askyesno("Підтвердження", f"Ви впевнені, що хочете видалити об'єкт '{current_object.name}'?"):
+                if ObjectSaver.delete(current_object.name):
+                    messagebox.showinfo("Успішно", f"Об'єкт '{current_object.name}' видалено.")
+                    self.load_and_display_objects() # Перезавантажуємо та відображаємо оновлений список
+                else:
+                    messagebox.showerror("Помилка", f"Не вдалося видалити об'єкт '{current_object.name}'.")
+        else:
+            messagebox.showinfo("Інформація", "Немає об'єктів для видалення.")
+
 
     def update_result_image(self, image_path):
         """
