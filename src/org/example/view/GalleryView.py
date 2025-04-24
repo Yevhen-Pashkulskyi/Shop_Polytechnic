@@ -6,7 +6,7 @@ class GalleryView:
     def __init__(self, parent_frame):
         # Галерея зображень
         self.image_paths_soccer_ball = ["../../../resource/img/ball/adidas.png",
-                                        "../../../resource/img/ball/pumapuma.png",
+                                        "../../../resource/img/ball/puma.png",
                                         "../../../resource/img/ball/ball3.png"]
         self.current_index = 0
         self.image_label = Label(parent_frame)

@@ -37,6 +37,7 @@ class Control:
 
             self.gui.result_label.config(text=ball.getInfo())
             self.gui.update_result_image(image_path)
+            self.gui.load_and_display_objs()
 
         except ValueError as ve:
             messagebox.showerror("Помилка валідації", str(ve))
