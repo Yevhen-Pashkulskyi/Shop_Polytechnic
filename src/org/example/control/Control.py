@@ -1,6 +1,7 @@
 from tkinter import messagebox
 
 from src.org.example.model.CreateObj import CreateObj
+from src.org.example.model.ObjSaver import ObjSaver
 
 
 class Control:
@@ -29,8 +30,10 @@ class Control:
             image_path = self.gui.view.get_current_image_path()
 
             ball = CreateObj.create_soccer_ball(name, price, weight, diameter, pressure,
-                                                manufacturer, material, year, country
-                                               )
+                                                manufacturer, material, year, country,
+                                               image_path)
+
+            ObjSaver.save(ball)
 
             self.gui.result_label.config(text=ball.getInfo())
             self.gui.update_result_image(image_path)

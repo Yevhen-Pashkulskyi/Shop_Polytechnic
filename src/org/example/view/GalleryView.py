@@ -5,9 +5,9 @@ from PIL import Image, ImageTk
 class GalleryView:
     def __init__(self, parent_frame):
         # Галерея зображень
-        self.image_paths_soccer_ball = ["../../../resource/img/ball1.png",
-                                        "../../../resource/img/ball2.png",
-                                        "../../../resource/img/ball3.png"]
+        self.image_paths_soccer_ball = ["../../../resource/img/ball/adidas.png",
+                                        "../../../resource/img/ball/pumapuma.png",
+                                        "../../../resource/img/ball/ball3.png"]
         self.current_index = 0
         self.image_label = Label(parent_frame)
         self.image_label.grid(row=15, column=0, columnspan=2, pady=10)
@@ -29,10 +29,10 @@ class GalleryView:
         self.current_index = (self.current_index - 1) % len(self.image_paths_soccer_ball)
         self.show_image_ball()
 
-    def clear_image(self):
-        self.image_label.config(text="")
-        self.current_index = 0
-        self.show_image_ball()
-
     def get_current_image_path(self):
         return self.image_paths_soccer_ball[self.current_index]
+
+    # def clear_image(self):
+    #     self.image_label.config(text="")
+    #     self.current_index = 0
+    #     self.show_image_ball()

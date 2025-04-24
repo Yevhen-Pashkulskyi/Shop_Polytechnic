@@ -3,6 +3,7 @@ import tkinter as tk
 from tkinter import messagebox, ttk
 from PIL import Image, ImageTk
 from src.org.example.control.Control import Control
+from src.org.example.model.ObjSaver import ObjSaver
 from src.org.example.view.ListBoxManager import ListboxManager
 
 
@@ -13,9 +14,11 @@ class GUIBuilder:
         self.root = root
         self.view = None
         self.control = Control(self)
+        self.loaded_objects = []
+        self.current_loaded_obj_index = 0
 
         self.root.title("Спортивний інвентар - ⚽🛹🏓🛼🎾")
-        self.root.geometry("550x900")
+        self.root.geometry("550x950")
 
         self.notebook = ttk.Notebook(self.root)
         # вкладка для вводу даних
@@ -122,6 +125,43 @@ class GUIBuilder:
 
         self.result_image_label = tk.Label(self.obj_tab)
         self.result_image_label.pack(pady=10)
+
+        # Кнопки для перемикання між завантаженими об'єктами
+        prev_obj_button = ttk.Button(self.obj_tab, text="⬅️ Попередній об'єкт", command=self.show_previous_loaded_object)
+        prev_obj_button.pack(side="left", padx=10, pady=5)
+
+        next_obj_button = ttk.Button(self.obj_tab, text="➡️ Наступний об'єкт", command=self.show_next_loaded_object)
+        next_obj_button.pack(side="right", padx=10, pady=5)
+
+        self.load_and_display_objs()
+
+    def load_and_display_objs(self):
+        self.loaded_objects = ObjSaver.load_all()
+        if self.loaded_objects:
+            self.show_loaded_object(0) # Показати перший об'єкт
+        else:
+            self.result_label.config(text="Ще не було створено жодного об'єкта.")
+            self.result_image_label.config(image='', text="")
+
+    def show_loaded_object(self, index):
+        if 0 <= index < len(self.loaded_objects):
+            obj = self.loaded_objects[index]
+            self.result_label.config(text=obj.getInfo())
+            if obj.image_path:
+                self.update_result_image(obj.image_path)
+            else:
+                self.result_image_label.config(image='', text="❌ Зображення відсутнє")
+            self.current_loaded_object_index = index
+
+    def show_previous_loaded_object(self):
+        if self.loaded_objects:
+            self.current_loaded_object_index = (self.current_loaded_object_index - 1) % len(self.loaded_objects)
+            self.show_loaded_object(self.current_loaded_object_index)
+
+    def show_next_loaded_object(self):
+        if self.loaded_objects:
+            self.current_loaded_object_index = (self.current_loaded_object_index + 1) % len(self.loaded_objects)
+            self.show_loaded_object(self.current_loaded_object_index)
 
     def update_result_image(self, image_path):
         try:

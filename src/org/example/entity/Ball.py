@@ -3,7 +3,7 @@ from src.org.example.entity.SportsEquipment import SportsEquipment
 
 class Ball(SportsEquipment):
     def __init__(self, name, price, weight, diameter, pressure,
-                 manufacturer, material, year, country):
+                 manufacturer, material, year, country, image_path):
         super().__init__(name, price, weight)
         self.diameter = diameter  # діаметр
         self.pressure = pressure  # тиск
@@ -12,7 +12,7 @@ class Ball(SportsEquipment):
         self.material = material  # матеріал
         self.year = year  # рік
         self.country = country  # країна
-
+        self.image_path = image_path
 
     def getInfo(self):
         return (f"{super().getInfo()}\n"

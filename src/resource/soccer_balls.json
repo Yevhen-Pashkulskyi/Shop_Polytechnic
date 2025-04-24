@@ -1,0 +1,26 @@
+[
+    {
+        "name": "Soccer ball",
+        "price": 5400.0,
+        "weight": 0.54,
+        "diameter": 21.64,
+        "pressure": 0.08,
+        "manufacturer": "Adidas",
+        "material": "Шкіра",
+        "year": "2020",
+        "country": "Україна",
+        "image_path": "../../../resource/img/ball/adidas.png"
+    },
+    {
+        "name": "Soccer ball",
+        "price": 4800.0,
+        "weight": 0.54,
+        "diameter": 21.64,
+        "pressure": 0.8,
+        "manufacturer": "Puma",
+        "material": "Синтетика",
+        "year": "2024",
+        "country": "США",
+        "image_path": "../../../resource/img/ball/puma.png"
+    }
+]
