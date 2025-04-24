@@ -9,7 +9,7 @@ class App:
         self.gui = GUIBuilder(root)
         self.view = GalleryView(self.gui.input_tab)
         self.gui.set_gallery_view(self.view)
-        self.view.show_image()
+        self.view.show_image_ball()
 
 
 if __name__ == "__main__":

@@ -2,7 +2,7 @@ from tkinter import END, messagebox
 
 class ListboxManager:
     @staticmethod
-    def add_item(listbox, entry_widget, limit=5):
+    def add_item(listbox, entry_widget, limit=6):
         if listbox.size() >= limit:
             messagebox.showwarning("Ліміт", f"⚠️ Максимальна кількість виробників — {limit}")
             return
@@ -21,7 +21,7 @@ class ListboxManager:
                 listbox.insert(index, new_value)
                 entry_widget.delete(0, END)
         except IndexError:
-            messagebox.showwarning("⚠️", "Оберіть елемент для редагування.")
+            messagebox.showwarning("⚠️", "Оберіть виробника для редагування.")
 
     @staticmethod
     def delete_item(listbox):
@@ -29,7 +29,7 @@ class ListboxManager:
             index = listbox.curselection()[0]
             listbox.delete(index)
         except IndexError:
-            messagebox.showwarning("⚠️", "Оберіть елемент для видалення.")
+            messagebox.showwarning("⚠️", "Оберіть виробника для видалення.")
 
     @staticmethod
     def sort_items(listbox):

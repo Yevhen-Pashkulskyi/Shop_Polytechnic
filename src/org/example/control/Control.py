@@ -28,18 +28,18 @@ class Control:
             country = self.gui.selected_country.get()
             image_path = self.gui.view.get_current_image_path()
 
-            soccer_ball = CreateObj.create_soccer_ball(name, price, weight, diameter, pressure,
-                                                       manufacturer, material, year, country,
-                                                       image_path=image_path)
+            ball = CreateObj.create_soccer_ball(name, price, weight, diameter, pressure,
+                                                manufacturer, material, year, country
+                                               )
+
+            self.gui.result_label.config(text=ball.getInfo())
             self.gui.update_result_image(image_path)
-            self.gui.result_label.config(text=soccer_ball.getInfo())
 
         except ValueError as ve:
             messagebox.showerror("Помилка валідації", str(ve))
         except Exception as e:
             messagebox.showerror("Помилка", f"⚠️ Сталася непередбачена помилка:\n{e}")
 
-    # 👇 Добавь вспомогательную функцию
     def get_selected_listbox_value(self, listbox, label):
         try:
             index = listbox.curselection()[0]
@@ -47,11 +47,15 @@ class Control:
         except IndexError:
             raise ValueError(f"⛔ Оберіть значення {label} зі списку.")
 
+    # функция для проверки ввода на число и отрецательное число
     def get_float(self, entry, label_name):
         value = entry.get().strip()
         if not value:
             raise ValueError(f"⛔ Поле «{label_name}» не може бути порожнім.")
         try:
-            return float(value)
+            float_value = float(value)
         except ValueError:
             raise ValueError(f"⛔ Поле «{label_name}» повинно містити число.")
+        if float_value <= 0:
+            raise ValueError(f"⛔ Значення «{label_name}» не може бути від'ємним.")
+        return float_value
