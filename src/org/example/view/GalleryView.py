@@ -4,7 +4,6 @@ from PIL import Image, ImageTk
 
 class GalleryView:
     def __init__(self, parent_frame):
-        # Галерея зображень
         self.image_paths_soccer_ball = ["../../../resource/img/ball/adidas.png",
                                         "../../../resource/img/ball/puma.png",
                                         "../../../resource/img/ball/ball3.png"]

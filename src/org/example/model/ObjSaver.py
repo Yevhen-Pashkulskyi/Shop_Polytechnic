@@ -55,10 +55,10 @@ class ObjSaver:
                     content = json.load(file)
                     updated_content = [item for item in content if item["name"] != ball_name]
                     file.seek(0)
-                    file.truncate() # Очищаємо вміст файлу перед записом оновлених даних
+                    file.truncate()
                     json.dump(updated_content, file, indent=4, ensure_ascii=False)
-                    return True # Повертаємо True, якщо об'єкт був знайдений і видалений
+                    return True
                 except json.JSONDecodeError:
-                    return False # Повертаємо False, якщо файл порожній або містить некоректний JSON
+                    return False
         else:
-            return False # Повертаємо False, якщо файл не існує
+            return False

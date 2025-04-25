@@ -5,13 +5,13 @@ class Ball(SportsEquipment):
     def __init__(self, name, price, weight, diameter, pressure,
                  manufacturer, material, year, country, image_path):
         super().__init__(name, price, weight)
-        self.diameter = diameter  # діаметр
-        self.pressure = pressure  # тиск
-        # new values
-        self.manufacturer = manufacturer  # виробник
-        self.material = material  # матеріал
-        self.year = year  # рік
-        self.country = country  # країна
+        self.diameter = diameter
+        self.pressure = pressure
+
+        self.manufacturer = manufacturer
+        self.material = material
+        self.year = year
+        self.country = country
         self.image_path = image_path
 
     def getInfo(self):
@@ -22,4 +22,3 @@ class Ball(SportsEquipment):
                 f"Матеріал: {self.material}\n"
                 f"Рік випуску: {self.year}\n"
                 f"Країна: {self.country}\n")
-                # f"Зображення: {self.image_path}")
