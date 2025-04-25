@@ -10,11 +10,11 @@ from src.org.example.view.ListBoxManager import ListboxManager
 # інтерфейс тобто вікно для відображення даних та управління програмою
 class GUIBuilder:
     def __init__(self, root):
-        self.tk_result_img = None
+        self.tk_result_img = None # атрибут для зберігання результату зображення
         self.root = root
-        self.view = None
-        self.control = Control(self)
-        self.loaded_objects = []
+        self.view = None # атрибут для зберігання посилання на
+        self.control = Control(self) # екземпляр класу для взаємодії з елементами
+        self.loaded_objects = [] #атрибут для завантаження об'єктів
         self.current_loaded_obj_index = 0
 
         self.root.title("Спортивний інвентар - ⚽🛹🏓🛼🎾")
@@ -29,7 +29,7 @@ class GUIBuilder:
         self.notebook.add(self.obj_tab, text="Інформація")
         self.notebook.pack(fill="both", expand=True)
 
-        # Ввід атрибутів у вікно
+        # ввід атрибутів у вікно "ввід даних"
         # назва
         tk.Label(self.input_tab, text="Назва:").grid(row=0, column=0, sticky="w", padx=5, pady=5)
         self.name_entry = tk.Entry(self.input_tab, width=20)
@@ -51,7 +51,7 @@ class GUIBuilder:
         self.pressure_entry = tk.Entry(self.input_tab, width=10)
         self.pressure_entry.grid(row=4, column=1, padx=5, pady=5)
 
-        # --- Виробник (Listbox + scrollbar)
+        # виробник та скрол
         tk.Label(self.input_tab, text="Виробник:").grid(row=5, column=0, sticky="w", padx=5, pady=5)
         self.manufacturer_listbox = tk.Listbox(self.input_tab, height=4, width=10, exportselection=False)
         self.manufacturer_scroll = tk.Scrollbar(self.input_tab, orient=tk.VERTICAL,
@@ -63,7 +63,7 @@ class GUIBuilder:
         for item in self.manufacturers:
             self.manufacturer_listbox.insert(tk.END, item)
 
-        # --- Матеріал (OptionMenu)
+        # матеріал
         tk.Label(self.input_tab, text="Матеріал:").grid(row=6, column=0, sticky="w", padx=5, pady=5)
         self.materials = ("Шкіра", "Гума", "Синтетика")
         self.selected_material = tk.StringVar()
@@ -71,7 +71,7 @@ class GUIBuilder:
         tk.OptionMenu(self.input_tab, self.selected_material,
                       *self.materials).grid(row=6, column=1, padx=5, pady=5)
 
-        # --- Рік випуску (OptionMenu з кортежу)
+        # рік випуску
         tk.Label(self.input_tab, text="Рік випуску:").grid(row=7, column=0, sticky="w", padx=5, pady=5)
         self.years = ("2020", "2021", "2022", "2023", "2024")
         self.selected_year = tk.StringVar()
@@ -79,7 +79,7 @@ class GUIBuilder:
         tk.OptionMenu(self.input_tab, self.selected_year,
                       *self.years).grid(row=7, column=1, padx=5, pady=5)
 
-        # --- Країна (OptionMenu з кортежу)
+        # країна
         tk.Label(self.input_tab, text="Країна виробництва:").grid(row=8, column=0, sticky="w", padx=5, pady=5)
         self.countries = ("Україна", "США", "Китай", "Німеччина")
         self.selected_country = tk.StringVar()
@@ -87,12 +87,12 @@ class GUIBuilder:
         tk.OptionMenu(self.input_tab, self.selected_country,
                       *self.countries).grid(row=8, column=1, padx=5, pady=5)
 
-        # Для ввода і редагування виробників
+        # для ввода і редагування виробників
         tk.Label(self.input_tab, text="Новий виробник:").grid(row=9, column=0, sticky="w", padx=5, pady=5)
         self.new_manufacturer_entry = tk.Entry(self.input_tab)
         self.new_manufacturer_entry.grid(row=9, column=1, padx=5, pady=5)
 
-        # Кнопки керування списком
+        # кнопки керування списком
         (tk.Button(self.input_tab, text="➕ Додати",
                    command=lambda: ListboxManager.add_item(self.manufacturer_listbox,
                                                            self.new_manufacturer_entry)).grid(row=10, column=1, padx=5,
@@ -112,7 +112,7 @@ class GUIBuilder:
                                                                                                 padx=1,
                                                                                                 columnspan=2, pady=2)
 
-        # Галерея (зображення)
+        # галерея
         self.image_display_label = tk.Label(self.input_tab)
         self.image_display_label.grid(row=13, column=0, columnspan=3, pady=10)
 
@@ -120,27 +120,32 @@ class GUIBuilder:
         tk.Button(self.input_tab, text="✅ Створити об'єкт",
                   command=self.control.create_soccer_ball).grid(row=15, column=1, pady=2)
 
-        # Елементи вкладки "Інформація"
+        # елементи вкладки "інформація"
         self.result_label = tk.Label(self.obj_tab, text="", font=("Arial", 12), justify=tk.CENTER)
         self.result_label.grid(row=0, column=0, columnspan=3, padx=5, pady=2, sticky="ew")
 
+        # опис товару(об'єкта)
         self.result_image_label = tk.Label(self.obj_tab)
+        # зображення товару
         self.result_image_label.grid(row=1, column=0, columnspan=3, padx=5, sticky="ew")
 
+        # кнопки перемікання товару
+        (ttk.Button(self.obj_tab, text="⬅️ Попередній об'єкт",
+                    command=self.show_previous_loaded_object)
+         .grid(row=2, column=0, padx=10, pady=5, sticky="w"))
 
-        prev_obj_button = ttk.Button(self.obj_tab, text="⬅️ Попередній об'єкт",
-                                     command=self.show_previous_loaded_object)
-        prev_obj_button.grid(row=2, column=0, padx=10, pady=5, sticky="w")
+        (ttk.Button(self.obj_tab, text="➡️ Наступний об'єкт", command=self.show_next_loaded_object).
+         grid(row=2, column=2, padx=10, pady=5, sticky="e"))
 
-        next_obj_button = ttk.Button(self.obj_tab, text="➡️ Наступний об'єкт", command=self.show_next_loaded_object)
-        next_obj_button.grid(row=2, column=2, padx=10, pady=5, sticky="e")
+        # кнопка видалення товару
+        (ttk.Button(self.obj_tab, text="🗑️ Видалити об'єкт",
+                    command=self.delete_current_object, width=20).
+         grid(row=3, column=0, columnspan=3, padx=10, sticky="ew"))
 
-        delete_obj_button = ttk.Button(self.obj_tab, text="🗑️ Видалити об'єкт", command=self.delete_current_object,
-                                       width=20)
-        delete_obj_button.grid(row=3, column=0, columnspan=3, padx=10, sticky="ew")
 
         self.load_and_display_objs()
 
+    # метод завантаження об'єктів
     def load_and_display_objs(self):
         self.loaded_objects = ObjSaver.load_all()
         if self.loaded_objects:
@@ -149,6 +154,7 @@ class GUIBuilder:
             self.result_label.config(text="Ще не було створено жодного об'єкта.")
             self.result_image_label.config(image='', text="")
 
+    # метод для відображення об'єктів з всією інфо та зображенням
     def show_loaded_object(self, index):
         if 0 <= index < len(self.loaded_objects):
             obj = self.loaded_objects[index]
@@ -159,16 +165,19 @@ class GUIBuilder:
                 self.result_image_label.config(image='', text="❌ Зображення відсутнє")
             self.current_loaded_object_index = index
 
+    # метод для відображення попереднього об'єкту'
     def show_previous_loaded_object(self):
         if self.loaded_objects:
             self.current_loaded_object_index = (self.current_loaded_object_index - 1) % len(self.loaded_objects)
             self.show_loaded_object(self.current_loaded_object_index)
 
+    # метод для відображення наступного об'єкту'
     def show_next_loaded_object(self):
         if self.loaded_objects:
             self.current_loaded_object_index = (self.current_loaded_object_index + 1) % len(self.loaded_objects)
             self.show_loaded_object(self.current_loaded_object_index)
 
+    # метод для видалення об'єкту
     def delete_current_object(self):
         if self.loaded_objects:
             current_object = self.loaded_objects[self.current_loaded_object_index]
@@ -183,10 +192,6 @@ class GUIBuilder:
 
     def update_result_image(self, image_path):
         try:
-            # print("Путь к изображению:", image_path)
-            # print("Существует ли файл:", os.path.exists(image_path))
-            # print("Текущая рабочая директория:", os.getcwd())
-
             img = Image.open(image_path)
             img = img.resize((250, 150))
             self.tk_result_img = ImageTk.PhotoImage(img)
@@ -198,6 +203,7 @@ class GUIBuilder:
             print(f"[❌] Помилка завантаження зображення: {e}")
             self.result_image_label.config(image='', text="❌ Не вдалося завантажити зображення")
 
+    # метод для встановлення посилання на об'єкт GalleryView
     def set_gallery_view(self, view):
         self.view = view
         self.view.image_label = self.image_display_label

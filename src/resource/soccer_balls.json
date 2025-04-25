@@ -12,27 +12,15 @@
         "image_path": "../../../resource/img/ball/adidas.png"
     },
     {
-        "name": "sfds",
-        "price": 1.0,
+        "name": "ball",
+        "price": 10.0,
         "weight": 1.0,
         "diameter": 1.0,
         "pressure": 1.0,
-        "manufacturer": "Adidas",
-        "material": "Шкіра",
-        "year": "2020",
-        "country": "Україна",
-        "image_path": "../../../resource/img/ball/puma.png"
-    },
-    {
-        "name": "slf;s",
-        "price": 1.0,
-        "weight": 1.0,
-        "diameter": 1.0,
-        "pressure": 1.0,
-        "manufacturer": "Puma",
-        "material": "Шкіра",
-        "year": "2020",
-        "country": "Україна",
+        "manufacturer": "Nike",
+        "material": "Гума",
+        "year": "2022",
+        "country": "США",
         "image_path": "../../../resource/img/ball/ball3.png"
     }
 ]
