@@ -1,141 +1,173 @@
-from tkinter import messagebox # Імпортуємо модуль messagebox з бібліотеки tkinter.
-# messagebox використовується для відображення стандартних діалогових вікон,
-# таких як повідомлення про помилки, попередження тощо.
-
-from src.org.example.model.CreateObj import CreateObj # Імпортуємо клас CreateObj з вказаного модуля.
-# CreateObj, ймовірно, містить статичні методи для створення
-# об'єктів різних сутностей (у цьому випадку - футбольних м'ячів).
-from src.org.example.model.ObjSaver import ObjectSaver # Імпортуємо клас ObjectSaver з вказаного модуля.
-# ObjectSaver відповідає за збереження даних об'єктів у файл.
-
+from src.org.example.model.ObjSaver import ObjSaver # Імпортуємо клас ObjSaver з модуля ObjSaver.py
+from src.org.example.model.CreateObj import CreateObj # Імпортуємо клас CreateObj з модуля CreateObj.py
+from src.org.example.view.GUIBuilder import GUIBuilder # Імпортуємо клас GUIBuilder з модуля GUIBuilder.py
+from src.org.example.view.GalleryView import GalleryView # Імпортуємо клас GalleryView з модуля GalleryView.py
 
 class Control:
-    def __init__(self, gui):
+    """
+    Клас Control відповідає за управління логікою програми.
+    Він координує взаємодію між моделлю (даними) та представленням (GUI).
+    """
+    def __init__(self):
         """
-        Конструктор класу Control.
+        Ініціалізує об'єкт Control.
+        Встановлює початкові значення для атрибутів gui, gallery, loaded_objects та current_loaded_index.
+        """
+        self.gui = None # Змінна для зберігання об'єкта GUIBuilder (інтерфейс).
+        self.gallery = None # Змінна для зберігання об'єкта GalleryView (галерея зображень).
+        self.loaded_objects = [] # Список для зберігання завантажених об'єктів (наприклад, футбольних м'ячів).
+        self.current_loaded_index = 0 # Індекс поточного завантаженого об'єкта у списку loaded_objects.
+
+    def init_gui(self, root):
+        """
+        Ініціалізує графічний інтерфейс (GUI) та завантажує об'єкти.
 
         Args:
-            gui (GUIBuilder): Екземпляр класу GUIBuilder, що надає доступ до елементів графічного інтерфейсу.
+            root (tkinter.Tk): Кореневий об'єкт Tkinter для створення GUI.
         """
-        self.gui = gui # Зберігаємо посилання на об'єкт GUIBuilder (gui) в атрибуті self.gui.
-        # Це дозволяє класу Control взаємодіяти з елементами GUI, такими як поля введення,
-        # мітки для виведення результатів тощо.
+        self.gui = GUIBuilder(root, self) # Створює об'єкт GUIBuilder, передаючи кореневий об'єкт та посилання на поточний об'єкт Control.
+        self.gallery = GalleryView(self.gui.input_tab) # Створює об'єкт GalleryView, передаючи вкладку введення даних з GUIBuilder.
+        self.gui.set_gallery_view(self.gallery) # Встановлює об'єкт GalleryView для GUIBuilder, щоб вони могли взаємодіяти.
+        self.gallery.show_image_ball() # Показує початкове зображення в галереї.
+        self.load_objects() # Завантажує об'єкти з файлу.
 
     def create_soccer_ball(self):
         """
-        Метод для створення об'єкта футбольного м'яча на основі даних з GUI.
-        Викликається при натисканні кнопки "✅ Створити об'єкт".
+        Створює об'єкт футбольного м'яча на основі даних, введених користувачем, та зберігає його.
+        Також оновлює GUI для відображення створеного об'єкта.
         """
         try:
-            name = self.gui.name_entry.get().strip() # Отримуємо значення з поля введення назви (self.gui.name_entry),
-            # видаляємо зайві пробіли на початку та в кінці за допомогою .strip().
-            # self.gui.name_entry - це атрибут об'єкта GUIBuilder,
-            # який є об'єктом tkinter.Entry для введення назви.
-            if not name:
-                raise ValueError("⛔ Поле «Назва» не може бути порожнім.") # Якщо поле назви порожнє,
-                # генеруємо виняток ValueError з відповідним повідомленням.
+            name = self.gui.name_entry.get().strip() # Отримує назву м'яча з поля введення та видаляє зайві пробіли.
+            if not name: # Перевіряє, чи введено назву.
+                raise ValueError("⛔ Поле «Назва» не може бути порожнім.") # Викликає виняток, якщо назва не введена.
 
-            price = self.get_float(self.gui.price_entry, "Ціна (грн)") # Викликаємо метод self.get_float() для отримання
-            # значення ціни з поля введення (self.gui.price_entry)
-            # та його валідації.
-            # self.gui.price_entry - це атрибут об'єкта GUIBuilder,
-            # який є об'єктом tkinter.Entry для введення ціни.
-            weight = self.get_float(self.gui.weight_entry, "Вага (кг)") # Аналогічно для ваги (self.gui.weight_entry).
-            # self.gui.weight_entry - це атрибут об'єкта GUIBuilder,
-            # який є об'єктом tkinter.Entry для введення ваги.
-            diameter = self.get_float(self.gui.diameter_entry, "Діаметр (см)") # Аналогічно для діаметра (self.gui.diameter_entry).
-            # self.gui.diameter_entry - це атрибут об'єкта GUIBuilder,
-            # який є об'єктом tkinter.Entry для введення діаметра.
-            pressure = self.get_float(self.gui.pressure_entry, "Тиск (атм)") # Аналогічно для тиску (self.gui.pressure_entry).
-            # self.gui.pressure_entry - це атрибут об'єкта GUIBuilder,
-            # який є об'єктом tkinter.Entry для введення тиску.
+            price = self.get_float(self.gui.price_entry, "Ціна (грн)") # Отримує та валідує ціну м'яча.
+            weight = self.get_float(self.gui.weight_entry, "Вага (кг)") # Отримує та валідує вагу м'яча.
+            diameter = self.get_float(self.gui.diameter_entry, "Діаметр (см)") # Отримує та валідує діаметр м'яча.
+            pressure = self.get_float(self.gui.pressure_entry, "Тиск (атм)") # Отримує та валідує тиск м'яча.
 
-            # Получаем выбранного производителя
-            if self.gui.manufacturer_listbox.size() == 0: # Перевіряємо, чи список виробників (self.gui.manufacturer_listbox) не порожній.
-                # self.gui.manufacturer_listbox - це атрибут об'єкта GUIBuilder,
-                # який є об'єктом tkinter.Listbox для вибору виробника.
-                raise ValueError("⚠️ Список виробників не може бути порожнім.")
+            manufacturer = self.get_selected_listbox_value(self.gui.manufacturer_listbox, "виробника") # Отримує обраного виробника зі списку.
+            material = self.gui.selected_material.get() # Отримує обраний матеріал м'яча.
+            year = self.gui.selected_year.get() # Отримує обраний рік випуску м'яча.
+            country = self.gui.selected_country.get() # Отримує обрану країну виробництва м'яча.
+            image_path = self.gallery.get_current_image_path() # Отримує шлях до зображення м'яча з галереї.
 
-            manufacturer = self.get_selected_listbox_value(self.gui.manufacturer_listbox, "виробника") # Отримуємо вибраного виробника
-            # зі списку (self.gui.manufacturer_listbox).
-            material = self.gui.selected_material.get() # Отримуємо вибраний матеріал з OptionMenu (self.gui.selected_material).
-            # self.gui.selected_material - це атрибут об'єкта GUIBuilder,
-            # який є об'єктом tkinter.StringVar, що зберігає вибраний матеріал.
-            year = self.gui.selected_year.get() # Отримуємо вибраний рік випуску з OptionMenu (self.gui.selected_year).
-            # self.gui.selected_year - це атрибут об'єкта GUIBuilder,
-            # який є об'єктом tkinter.StringVar, що зберігає вибраний рік.
-            country = self.gui.selected_country.get() # Отримуємо вибрану країну виробництва з OptionMenu (self.gui.selected_country).
-            # self.gui.selected_country - це атрибут об'єкта GUIBuilder,
-            # який є об'єктом tkinter.StringVar, що зберігає вибрану країну.
-            image_path = self.gui.view.get_current_image_path() # Отримуємо шлях до поточного зображення з галереї (self.gui.view).
-            # self.gui.view - це атрибут об'єкта GUIBuilder,
-            # який є об'єктом GalleryView.
+            ball = CreateObj.create_soccer_ball(name, price, weight, diameter, pressure,
+                                                manufacturer, material, year, country, image_path) # Створює об'єкт футбольного м'яча за допомогою CreateObj.
 
-            ball = CreateObj.create_soccer_ball(name, price, weight, diameter, pressure, # Викликаємо статичний метод create_soccer_ball
-                                                manufacturer, material, year, country,   # класу CreateObj для створення об'єкта Ball.
-                                                image_path)
+            ObjSaver.save(ball) # Зберігає створений об'єкт у файл.
+            self.gui.result_label.config(text=ball.getInfo()) # Оновлює текстову мітку в GUI інформацією про створений м'яч.
+            self.gui.update_result_image(image_path) # Оновлює відображення зображення в GUI.
+            self.load_objects() # Перезавантажує список об'єктів для оновлення відображення.
 
-            ObjectSaver.save(ball) # Викликаємо статичний метод save класу ObjectSaver для збереження створеного об'єкта ball.
+        except ValueError as ve: # Обробляє помилки валідації даних.
+            from tkinter import messagebox # Імпортує модуль messagebox для відображення вікон повідомлень.
+            messagebox.showerror("Помилка валідації", str(ve)) # Показує вікно з помилкою валідації.
+        except Exception as e: # Обробляє інші можливі помилки.
+            from tkinter import messagebox # Імпортує модуль messagebox для відображення вікон повідомлень.
+            messagebox.showerror("Помилка", f"⚠️ Сталася помилка: {e}") # Показує вікно з загальною помилкою.
 
-            self.gui.result_label.config(text=ball.getInfo()) # Оновлюємо текст мітки результату (self.gui.result_label)
-            # інформацією про створений м'яч, отриманою за допомогою методу ball.getInfo().
-            # self.gui.result_label - це атрибут об'єкта GUIBuilder,
-            # який є об'єктом tkinter.Label для відображення результату.
-            self.gui.update_result_image(image_path) # Оновлюємо відображення зображення результату, викликаючи метод
-            # self.gui.update_result_image() та передаючи йому шлях до зображення.
+    def load_objects(self):
+        """
+        Завантажує всі об'єкти (футбольні м'ячі) з файлу та відображає перший об'єкт або повідомлення про відсутність об'єктів.
+        """
+        self.loaded_objects = ObjSaver.load_all() # Завантажує список об'єктів з файлу за допомогою ObjSaver.
+        if self.loaded_objects: # Перевіряє, чи є завантажені об'єкти.
+            self.show_object(0) # Якщо є, відображає перший об'єкт.
+        else:
+            self.gui.result_label.config(text="Об'єкти відсутні") # Якщо немає об'єктів, виводить повідомлення.
+            self.gui.result_image_label.config(image='', text="❌") # Очищає відображення зображення та виводить символ "Хрестик".
 
-            # Оновлюємо відображення всіх об'єктів у вкладці "Інформація"
-            self.gui.load_and_display_objects()
+    def show_object(self, index):
+        """
+        Відображає об'єкт за вказаним індексом у GUI.
 
-        except ValueError as ve: # Обробляємо винятки ValueError, які можуть виникнути при валідації введених даних.
-            messagebox.showerror("Помилка валідації", str(ve)) # Відображаємо діалогове вікно з повідомленням про помилку валідації.
-        except Exception as e: # Обробляємо будь-які інші винятки, які можуть виникнути під час виконання.
-            messagebox.showerror("Помилка", f"⚠️ Сталася непередбачена помилка:\n{e}") # Відображаємо діалогове вікно з повідомленням про непередбачену помилку.
+        Args:
+            index (int): Індекс об'єкта, який потрібно відобразити.
+        """
+        if 0 <= index < len(self.loaded_objects): # Перевіряє, чи індекс коректний.
+            ball = self.loaded_objects[index] # Отримує об'єкт за індексом.
+            self.gui.result_label.config(text=ball.getInfo()) # Оновлює текстову мітку в GUI інформацією про об'єкт.
+            self.gui.update_result_image(ball.image_path) # Оновлює відображення зображення в GUI.
+            self.current_loaded_index = index # Оновлює індекс поточного об'єкта.
+
+    def show_next_loaded_object(self):
+        """
+        Відображає наступний об'єкт у списку завантажених об'єктів.
+        Якщо поточний об'єкт останній, відображається перший об'єкт (циклічний перехід).
+        """
+        if self.loaded_objects: # Перевіряє, чи є завантажені об'єкти.
+            self.current_loaded_index = (self.current_loaded_index + 1) % len(self.loaded_objects) # Обчислює індекс наступного об'єкта.
+            self.show_object(self.current_loaded_index) # Відображає об'єкт за обчисленим індексом.
+
+    def show_previous_loaded_object(self):
+        """
+        Відображає попередній об'єкт у списку завантажених об'єктів.
+        Якщо поточний об'єкт перший, відображається останній об'єкт (циклічний перехід).
+        """
+        if self.loaded_objects: # Перевіряє, чи є завантажені об'єкти.
+            self.current_loaded_index = (self.current_loaded_index - 1) % len(self.loaded_objects) # Обчислює індекс попереднього об'єкта.
+            self.show_object(self.current_loaded_index) # Відображає об'єкт за обчисленим індексом.
+
+    def delete_current_object(self):
+        """
+        Видаляє поточний відображений об'єкт зі списку завантажених об'єктів та файлу.
+        Виводить підтвердження перед видаленням.
+        """
+        if not self.loaded_objects: # Якщо список об'єктів порожній, виходимо з методу.
+            return
+
+        from tkinter import messagebox # Імпортуємо модуль messagebox для відображення вікон повідомлень.
+        ball = self.loaded_objects[self.current_loaded_index] # Отримуємо поточний об'єкт.
+        confirm = messagebox.askyesno("Підтвердження", f"Ви впевнені, що хочете видалити '{ball.name}'?") # Питаємо підтвердження у користувача.
+        if confirm: # Якщо користувач підтвердив видалення.
+            if ObjSaver.delete(ball.name): # Видаляємо об'єкт з файлу.
+                messagebox.showinfo("Успішно", f"Об'єкт '{ball.name}' видалено") # Виводимо повідомлення про успішне видалення.
+                self.load_objects() # Перезавантажуємо список об'єктів з файлу для оновлення відображення.
+            else:
+                messagebox.showerror("Помилка", f"Не вдалося видалити '{ball.name}'") # Виводимо повідомлення про помилку видалення.
 
     def get_selected_listbox_value(self, listbox, label):
         """
-        Метод для отримання вибраного значення зі списку (tkinter.Listbox).
+        Отримує значення, обране в списку (Listbox).
 
         Args:
-            listbox (tkinter.Listbox): Список, з якого потрібно отримати вибране значення.
-            label (str): Текстове представлення типу значення (наприклад, "виробника") для повідомлення про помилку.
+            listbox (tkinter.Listbox): Об'єкт Listbox, з якого потрібно отримати значення.
+            label (str): Назва поля, для якого отримується значення (використовується у повідомленні про помилку).
 
         Returns:
-            str: Вибране значення зі списку.
+            str: Обране значення зі списку.
 
         Raises:
-            ValueError: Якщо жодне значення не вибрано у списку.
+            ValueError: Якщо жодне значення не обрано у списку.
         """
         try:
-            index = listbox.curselection()[0] # Отримуємо індекс вибраного елемента в списку.
-            # Метод curselection() повертає кортеж з індексами вибраних елементів.
-            # Ми беремо перший (і єдиний, оскільки дозволено лише одне виділення).
+            index = listbox.curselection()[0] # Отримуємо індекс обраного елемента.
             return listbox.get(index) # Повертаємо значення елемента за отриманим індексом.
-        except IndexError: # Обробляємо виняток IndexError, який виникає, якщо жоден елемент не вибрано.
-            raise ValueError(f"⛔ Оберіть значення {label} зі списку.") # Генеруємо ValueError з повідомленням про необхідність вибору.
+        except IndexError: # Якщо жоден елемент не обрано, виникає помилка IndexError.
+            raise ValueError(f"⛔ Оберіть значення {label} зі списку.") # Викликаємо ValueError з повідомленням про помилку.
 
-    # функция для проверки ввода на число и отрецательное число
     def get_float(self, entry, label_name):
         """
-        Метод для отримання значення з поля введення (tkinter.Entry), перетворення його на float та валідації.
+        Отримує значення з поля введення (Entry) та перетворює його у число з плаваючою комою (float).
 
         Args:
-            entry (tkinter.Entry): Поле введення, з якого потрібно отримати значення.
-            label_name (str): Назва поля для повідомлень про помилки.
+            entry (tkinter.Entry): Об'єкт Entry, з якого потрібно отримати значення.
+            label_name (str): Назва поля, для якого отримується значення (використовується у повідомленнях про помилки).
 
         Returns:
-            float: Значення, введене в поле, у вигляді числа з плаваючою комою.
+            float: Значення, введене у поле, у вигляді числа з плаваючою комою.
 
         Raises:
-            ValueError: Якщо поле порожнє, містить не числове значення або від'ємне число.
+            ValueError: Якщо поле порожнє, введене значення не є числом, або число не є додатним.
         """
         value = entry.get().strip() # Отримуємо значення з поля введення та видаляємо зайві пробіли.
-        if not value:
-            raise ValueError(f"⛔ Поле «{label_name}» не може бути порожнім.") # Якщо поле порожнє, генеруємо ValueError.
+        if not value: # Перевіряємо, чи не порожнє поле.
+            raise ValueError(f"⛔ Поле «{label_name}» не може бути порожнім.") # Викликаємо ValueError, якщо поле порожнє.
         try:
-            float_value = float(value) # Намагаємося перетворити отримане значення на float.
-        except ValueError: # Обробляємо ValueError, який виникає, якщо значення не може бути перетворено на float.
-            raise ValueError(f"⛔ Поле «{label_name}» повинно містити число.")
-        if float_value <= 0: # Перевіряємо, чи отримане число не є від'ємним або нулем.
-            raise ValueError(f"⛔ Значення «{label_name}» не може бути від'ємним.")
-        return float_value # Повертаємо отримане та валідоване значення float.
+            float_value = float(value) # Намагаємося перетворити введене значення у float.
+        except ValueError: # Якщо введене значення не є числом, виникає помилка ValueError.
+            raise ValueError(f"⛔ Поле «{label_name}» повинно містити число.") # Викликаємо ValueError з повідомленням про помилку.
+        if float_value <= 0: # Перевіряємо, чи є число додатним.
+            raise ValueError(f"⛔ Значення «{label_name}» не може бути від'ємним.") # Викликаємо ValueError, якщо число не додатне.
+        return float_value # Повертаємо отримане число.

@@ -7,7 +7,7 @@ from src.org.example.model.CreateObj import CreateObj # Імпортуємо к�
 # створення об'єктів Ball при завантаженні даних.
 
 
-class ObjectSaver:
+class ObjSaver:
     """
     Клас, що відповідає за збереження та завантаження об'єктів Ball у JSON-файл.
     """
@@ -35,15 +35,15 @@ class ObjectSaver:
             "image_path": ball_obj.image_path # Значення атрибута image_path об'єкта ball_obj.
         }
 
-        if not os.path.exists(ObjectSaver.FILE_PATH): # Перевіряємо, чи існує файл за шляхом FILE_PATH.
-            with open(ObjectSaver.FILE_PATH, "w", encoding="utf-8") as file: # Якщо файл не існує, відкриваємо його для запису ('w')
+        if not os.path.exists(ObjSaver.FILE_PATH): # Перевіряємо, чи існує файл за шляхом FILE_PATH.
+            with open(ObjSaver.FILE_PATH, "w", encoding="utf-8") as file: # Якщо файл не існує, відкриваємо його для запису ('w')
                 # з кодуванням UTF-8. Конструкція 'with open(...)'
                 # гарантує автоматичне закриття файлу після завершення роботи.
                 json.dump([data], file, indent=4, ensure_ascii=False) # Записуємо список, що містить словник data, у файл у форматі JSON
                 # з відступами (indent=4) для кращої читабельності та
                 # вимкненою екранізацією не-ASCII символів (ensure_ascii=False).
         else: # Якщо файл вже існує.
-            with open(ObjectSaver.FILE_PATH, "r+", encoding="utf-8") as file: # Відкриваємо файл для читання та запису ('r+') з кодуванням UTF-8.
+            with open(ObjSaver.FILE_PATH, "r+", encoding="utf-8") as file: # Відкриваємо файл для читання та запису ('r+') з кодуванням UTF-8.
                 try:
                     content = json.load(file) # Намагаємося завантажити вміст файлу як об'єкт JSON (зазвичай список).
                     content.append(data) # Додаємо новий словник data до завантаженого списку.
@@ -61,8 +61,8 @@ class ObjectSaver:
             list: Список об'єктів класу Ball, завантажених з файлу.
                   Повертає порожній список, якщо файл не існує або містить некоректний JSON.
         """
-        if os.path.exists(ObjectSaver.FILE_PATH): # Перевіряємо, чи існує файл за шляхом FILE_PATH.
-            with open(ObjectSaver.FILE_PATH, "r", encoding="utf-8") as file: # Відкриваємо файл для читання ('r') з кодуванням UTF-8.
+        if os.path.exists(ObjSaver.FILE_PATH): # Перевіряємо, чи існує файл за шляхом FILE_PATH.
+            with open(ObjSaver.FILE_PATH, "r", encoding="utf-8") as file: # Відкриваємо файл для читання ('r') з кодуванням UTF-8.
                 try:
                     data_list = json.load(file) # Завантажуємо вміст файлу як об'єкт JSON (очікується список словників).
                     return [CreateObj.create_soccer_ball(**data) for data in data_list] # Використовуємо генератор списку для створення
@@ -82,8 +82,8 @@ class ObjectSaver:
         Args:
             ball_name (str): Назва об'єкта Ball, який потрібно видалити.
         """
-        if os.path.exists(ObjectSaver.FILE_PATH):
-            with open(ObjectSaver.FILE_PATH, "r+", encoding="utf-8") as file:
+        if os.path.exists(ObjSaver.FILE_PATH):
+            with open(ObjSaver.FILE_PATH, "r+", encoding="utf-8") as file:
                 try:
                     content = json.load(file)
                     updated_content = [item for item in content if item["name"] != ball_name]
