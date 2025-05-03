@@ -93,6 +93,10 @@ class GUIBuilder:
         self.result_image_label = tk.Label(self.obj_tab)
         self.result_image_label.grid(row=1, column=0, columnspan=3, padx=5, sticky="ew")
 
+        # Adding label to show data source
+        self.data_source_label = tk.Label(self.obj_tab, text="Джерело даних: JSON", font=("Arial", 10), justify=tk.CENTER)
+        self.data_source_label.grid(row=5, column=0, columnspan=3, padx=5, pady=2, sticky="ew")
+
         ttk.Button(self.obj_tab, text="⬅️ Попередній об'єкт", command=self.control.show_previous_loaded_object).grid(row=2, column=0, padx=10, pady=5, sticky="w")
         ttk.Button(self.obj_tab, text="➡️ Наступний об'єкт", command=self.control.show_next_loaded_object).grid(row=2, column=2, padx=10, pady=5, sticky="e")
         ttk.Button(self.obj_tab, text="🗑️ Видалити об'єкт", command=self.control.delete_current_object, width=20).grid(row=3, column=0, columnspan=3, padx=10, sticky="ew")
@@ -112,3 +116,6 @@ class GUIBuilder:
         self.view.image_label = self.image_display_label
         tk.Button(self.input_tab, text="⬅️ Попереднє", command=self.view.prev_image).grid(row=14, column=0, padx=10)
         tk.Button(self.input_tab, text="➡️ Наступне", command=self.view.next_image).grid(row=14, column=2, padx=10)
+
+    def update_data_source(self, source):
+        self.data_source_label.config(text=f"Джерело даних: {source}")
