@@ -1,0 +1,1 @@
+Name: Test, Price: 1000.0, Weight: 1000.0, Diameter: 100.0, Pressure: 10.0, Manufacturer: Adidas, Material: Шкіра, Year: 2020, Country: Україна, Image_path: ../../../resource/img/ball/puma.png

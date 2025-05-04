@@ -1,0 +1,14 @@
+[
+    {
+        "name": "Test",
+        "price": 1000.0,
+        "weight": 1000.0,
+        "diameter": 100.0,
+        "pressure": 10.0,
+        "manufacturer": "Adidas",
+        "material": "Шкіра",
+        "year": "2020",
+        "country": "Україна",
+        "image_path": "../../../resource/img/ball/puma.png"
+    }
+]
