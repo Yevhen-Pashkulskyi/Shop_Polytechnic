@@ -93,13 +93,19 @@ class GUIBuilder:
         self.result_image_label = tk.Label(self.obj_tab)
         self.result_image_label.grid(row=1, column=0, columnspan=3, padx=5, sticky="ew")
 
-        # Adding label to show data source
-        self.data_source_label = tk.Label(self.obj_tab, text="Джерело даних: JSON", font=("Arial", 10), justify=tk.CENTER)
-        self.data_source_label.grid(row=5, column=0, columnspan=3, padx=5, pady=2, sticky="ew")
+        # Adding source selection
+        tk.Label(self.obj_tab, text="Джерело даних:").grid(row=2, column=0, sticky="w", padx=5, pady=5)
+        self.source_var = tk.StringVar(value="json")
+        sources = ("JSON", "TXT", "CSV", "BIN")
+        tk.OptionMenu(self.obj_tab, self.source_var, *sources, command=self.control.load_objects_from_source).grid(row=2, column=1, columnspan=2, padx=5, pady=5)
 
-        ttk.Button(self.obj_tab, text="⬅️ Попередній об'єкт", command=self.control.show_previous_loaded_object).grid(row=2, column=0, padx=10, pady=5, sticky="w")
-        ttk.Button(self.obj_tab, text="➡️ Наступний об'єкт", command=self.control.show_next_loaded_object).grid(row=2, column=2, padx=10, pady=5, sticky="e")
-        ttk.Button(self.obj_tab, text="🗑️ Видалити об'єкт", command=self.control.delete_current_object, width=20).grid(row=3, column=0, columnspan=3, padx=10, sticky="ew")
+        # Adding label to show current data source
+        self.data_source_label = tk.Label(self.obj_tab, text="Джерело даних: JSON", font=("Arial", 10), justify=tk.CENTER)
+        self.data_source_label.grid(row=3, column=0, columnspan=3, padx=5, pady=2, sticky="ew")
+
+        ttk.Button(self.obj_tab, text="⬅️ Попередній об'єкт", command=self.control.show_previous_loaded_object).grid(row=4, column=0, padx=10, pady=5, sticky="w")
+        ttk.Button(self.obj_tab, text="➡️ Наступний об'єкт", command=self.control.show_next_loaded_object).grid(row=4, column=2, padx=10, pady=5, sticky="e")
+        ttk.Button(self.obj_tab, text="🗑️ Видалити об'єкт", command=self.control.delete_current_object, width=20).grid(row=5, column=0, columnspan=3, padx=10, sticky="ew")
 
     def update_result_image(self, image_path):
         try:

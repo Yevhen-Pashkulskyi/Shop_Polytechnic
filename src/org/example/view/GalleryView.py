@@ -30,8 +30,3 @@ class GalleryView:
 
     def get_current_image_path(self):
         return self.image_paths_soccer_ball[self.current_index]
-
-    # def clear_image(self):
-    #     self.image_label.config(text="")
-    #     self.current_index = 0
-    #     self.show_image_ball()

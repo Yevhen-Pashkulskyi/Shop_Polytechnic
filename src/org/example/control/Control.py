@@ -11,8 +11,6 @@ class Control:
         self.current_loaded_index = 0
 
     def init_gui(self, root):
-
-
         self.gui = GUIBuilder(root, self)
         self.gallery = GalleryView(self.gui.input_tab)
         self.gui.set_gallery_view(self.gallery)
@@ -36,8 +34,8 @@ class Control:
             country = self.gui.selected_country.get()
             image_path = self.gallery.get_current_image_path()
 
-            ball = CreateObj.create_soccer_ball(name, price, weight, diameter, pressure,
-                                                manufacturer, material, year, country, image_path)
+            ball = CreateObj.create_soccer_ball(name, price, weight, diameter, pressure, manufacturer, material, year,
+                country, image_path)
 
             ObjSaver.save(ball)
             self.gui.result_label.config(text=ball.getInfo())
@@ -51,13 +49,17 @@ class Control:
             from tkinter import messagebox
             messagebox.showerror("Помилка", f"⚠️ Сталася помилка: {e}")
 
-    def load_objects(self):
-        self.loaded_objects = ObjSaver.load_all()
+    def load_objects(self, source="json"):
+        self.loaded_objects = ObjSaver.load_all(source=source)
+        self.gui.update_data_source(source.upper())
         if self.loaded_objects:
             self.show_object(0)
         else:
             self.gui.result_label.config(text="Об'єкти відсутні")
             self.gui.result_image_label.config(image='', text="❌")
+
+    def load_objects_from_source(self, source):
+        self.load_objects(source=source.lower())
 
     def show_object(self, index):
         if 0 <= index < len(self.loaded_objects):
